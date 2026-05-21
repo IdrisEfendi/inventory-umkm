@@ -3,8 +3,8 @@
         ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => '⌂'],
         ['label' => 'Produk', 'route' => 'products.index', 'icon' => '📦'],
         ['label' => 'Kategori', 'route' => 'categories.index', 'icon' => '🏷️'],
-        ['label' => 'Stok', 'route' => null, 'icon' => '⇄'],
-        ['label' => 'Penjualan', 'route' => null, 'icon' => '🧾'],
+        ['label' => 'Stok', 'route' => 'stock-movements.index', 'icon' => '⇄'],
+        ['label' => 'Penjualan', 'route' => 'sales.index', 'icon' => '🧾'],
         ['label' => 'Laporan', 'route' => null, 'icon' => '📊'],
     ];
 @endphp

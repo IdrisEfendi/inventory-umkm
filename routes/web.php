@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\StockMovementController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
@@ -21,6 +23,11 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/products/{product}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');
     Route::resource('products', ProductController::class)->except(['show']);
+
+    Route::get('/stock-movements', [StockMovementController::class, 'index'])->name('stock-movements.index');
+    Route::post('/stock-movements', [StockMovementController::class, 'store'])->name('stock-movements.store');
+
+    Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

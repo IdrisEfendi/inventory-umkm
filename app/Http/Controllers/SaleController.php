@@ -6,6 +6,7 @@ use App\Http\Requests\StoreSaleRequest;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\StockMovement;
+use App\Models\StoreSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -179,6 +180,14 @@ class SaleController extends Controller
     {
         return view('sales.show', [
             'sale' => $sale->load(['items.product', 'creator']),
+        ]);
+    }
+
+    public function receipt(Sale $sale): View
+    {
+        return view('sales.receipt', [
+            'sale' => $sale->load(['items.product', 'creator']),
+            'setting' => StoreSetting::current(),
         ]);
     }
 

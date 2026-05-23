@@ -18,7 +18,10 @@
             <h2 class="text-xl font-bold text-slate-950">{{ $sale->invoice_number }}</h2>
             <p class="mt-1 text-sm text-slate-500">{{ $sale->sale_date->format('d M Y H:i') }} • {{ $sale->customer_name ?: 'Pelanggan umum' }}</p>
         </div>
-        <a href="{{ route('sales.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">← Daftar Penjualan</a>
+        <div class="flex flex-col gap-2 sm:flex-row">
+            <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">Cetak Nota</a>
+            <a href="{{ route('sales.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">← Daftar Penjualan</a>
+        </div>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[1fr_360px]">

@@ -5,6 +5,7 @@
 ])
 
 <a href="{{ $href }}"
+   @if ($active) aria-current="page" @endif
    {{ $attributes->class([
         'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition',
         'border border-indigo-100 bg-indigo-50 text-indigo-700 shadow-sm dark:border-indigo-400/20 dark:bg-indigo-500/15 dark:text-indigo-200' => $active,

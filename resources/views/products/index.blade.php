@@ -22,12 +22,18 @@
     @endif
 
     <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <form method="GET" action="{{ route('products.index') }}" class="grid gap-3 lg:grid-cols-[1fr_180px_150px_150px_auto]">
+        <form method="GET" action="{{ route('products.index') }}" class="grid gap-3 xl:grid-cols-[1fr_180px_180px_150px_150px_auto]">
             <input name="search" value="{{ $search }}" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100" placeholder="Cari nama, SKU, deskripsi...">
             <select name="category_id" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">
                 <option value="">Semua Kategori</option>
                 @foreach ($categories as $category)
                     <option value="{{ $category->id }}" @selected((string) $categoryId === (string) $category->id)>{{ $category->name }}</option>
+                @endforeach
+            </select>
+            <select name="supplier_id" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">
+                <option value="">Semua Supplier</option>
+                @foreach ($suppliers as $supplier)
+                    <option value="{{ $supplier->id }}" @selected((string) $supplierId === (string) $supplier->id)>{{ $supplier->name }}</option>
                 @endforeach
             </select>
             <select name="status" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">
@@ -54,6 +60,7 @@
                         <tr>
                             <th class="px-5 py-4 font-bold">Produk</th>
                             <th class="px-5 py-4 font-bold">Kategori</th>
+                            <th class="px-5 py-4 font-bold">Supplier</th>
                             <th class="px-5 py-4 text-right font-bold">Harga Beli</th>
                             <th class="px-5 py-4 text-right font-bold">Harga Jual</th>
                             <th class="px-5 py-4 text-right font-bold">Stok</th>
@@ -70,6 +77,7 @@
                                     <p class="mt-1 max-w-md truncate text-xs text-slate-400">{{ $product->description ?: 'Tidak ada deskripsi' }}</p>
                                 </td>
                                 <td class="px-5 py-4">{{ $product->category?->name ?? 'Tanpa kategori' }}</td>
+                                <td class="px-5 py-4">{{ $product->supplier?->name ?? 'Tanpa supplier' }}</td>
                                 <td class="px-5 py-4 text-right">Rp {{ number_format($product->purchase_price, 0, ',', '.') }}</td>
                                 <td class="px-5 py-4 text-right font-semibold text-slate-950">Rp {{ number_format($product->selling_price, 0, ',', '.') }}</td>
                                 <td class="px-5 py-4 text-right">

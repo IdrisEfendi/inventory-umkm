@@ -25,6 +25,17 @@
     </div>
 
     <div>
+        <label for="supplier_id" class="mb-2 block text-sm font-semibold text-slate-700">Supplier</label>
+        <select id="supplier_id" name="supplier_id" class="block w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition hover:border-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 @error('supplier_id') border-rose-300 focus:border-rose-500 focus:ring-rose-100 @enderror">
+            <option value="">Tanpa supplier</option>
+            @foreach ($suppliers as $supplier)
+                <option value="{{ $supplier->id }}" @selected((string) old('supplier_id', $product->supplier_id) === (string) $supplier->id)>{{ $supplier->name }}</option>
+            @endforeach
+        </select>
+        @error('supplier_id') <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p> @enderror
+    </div>
+
+    <div>
         <label for="purchase_price" class="mb-2 block text-sm font-semibold text-slate-700">Harga Beli <span class="text-rose-500">*</span></label>
         <input id="purchase_price" name="purchase_price" type="number" min="0" step="0.01" value="{{ old('purchase_price', $product->purchase_price) }}" required class="block w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition hover:border-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 @error('purchase_price') border-rose-300 focus:border-rose-500 focus:ring-rose-100 @enderror" placeholder="0">
         @error('purchase_price') <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p> @enderror

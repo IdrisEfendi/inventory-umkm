@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Supplier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,11 +17,12 @@ class ProductController extends Controller
     {
         $search = trim((string) $request->query('search'));
         $categoryId = $request->query('category_id');
+        $supplierId = $request->query('supplier_id');
         $status = $request->query('status');
         $stock = $request->query('stock');
 
         $products = Product::query()
-            ->with('category')
+            ->with(['category', 'supplier'])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%")
@@ -29,6 +31,7 @@ class ProductController extends Controller
                 });
             })
             ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
+            ->when($supplierId, fn ($query) => $query->where('supplier_id', $supplierId))
             ->when($status === 'active', fn ($query) => $query->where('is_active', true))
             ->when($status === 'inactive', fn ($query) => $query->where('is_active', false))
             ->when($stock === 'low', fn ($query) => $query->whereColumn('stock', '<=', 'minimum_stock'))
@@ -39,8 +42,10 @@ class ProductController extends Controller
         return view('products.index', [
             'products' => $products,
             'categories' => Category::where('is_active', true)->orderBy('name')->get(),
+            'suppliers' => Supplier::where('is_active', true)->orderBy('name')->get(),
             'search' => $search,
             'categoryId' => $categoryId,
+            'supplierId' => $supplierId,
             'status' => $status,
             'stock' => $stock,
         ]);
@@ -57,6 +62,7 @@ class ProductController extends Controller
                 'selling_price' => 0,
             ]),
             'categories' => Category::where('is_active', true)->orderBy('name')->get(),
+            'suppliers' => Supplier::where('is_active', true)->orderBy('name')->get(),
         ]);
     }
 
@@ -72,6 +78,10 @@ class ProductController extends Controller
         return view('products.edit', [
             'product' => $product,
             'categories' => Category::where('is_active', true)->orderBy('name')->get(),
+            'suppliers' => Supplier::where('is_active', true)
+                ->orWhere('id', $product->supplier_id)
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -110,6 +120,7 @@ class ProductController extends Controller
     {
         return [
             'category_id' => $data['category_id'] ?: null,
+            'supplier_id' => $data['supplier_id'] ?: null,
             'sku' => filled($data['sku'] ?? null) ? trim((string) $data['sku']) : null,
             'name' => trim((string) $data['name']),
             'description' => $data['description'] ?? null,

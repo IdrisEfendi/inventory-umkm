@@ -18,6 +18,7 @@ class UpdateProductRequest extends FormRequest
 
         return [
             'category_id' => ['nullable', 'exists:categories,id'],
+            'supplier_id' => ['nullable', 'exists:suppliers,id'],
             'sku' => ['nullable', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($productId)],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
@@ -35,6 +36,7 @@ class UpdateProductRequest extends FormRequest
             'name.required' => 'Nama produk wajib diisi.',
             'sku.unique' => 'SKU produk sudah digunakan.',
             'category_id.exists' => 'Kategori tidak valid.',
+            'supplier_id.exists' => 'Supplier tidak valid.',
             'purchase_price.required' => 'Harga beli wajib diisi.',
             'purchase_price.numeric' => 'Harga beli harus berupa angka.',
             'selling_price.required' => 'Harga jual wajib diisi.',

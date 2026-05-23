@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StockMovementController;
@@ -29,6 +30,8 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/suppliers/{supplier}/toggle', [SupplierController::class, 'toggle'])->name('suppliers.toggle');
     Route::resource('suppliers', SupplierController::class)->except(['show']);
+
+    Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);
 
     Route::get('/stock-movements', [StockMovementController::class, 'index'])->name('stock-movements.index');
     Route::post('/stock-movements', [StockMovementController::class, 'store'])->name('stock-movements.store');

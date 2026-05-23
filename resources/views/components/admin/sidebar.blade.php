@@ -4,6 +4,7 @@
         ['label' => 'Produk', 'route' => 'products.index', 'pattern' => 'products.*', 'icon' => '📦'],
         ['label' => 'Kategori', 'route' => 'categories.index', 'pattern' => 'categories.*', 'icon' => '🏷️'],
         ['label' => 'Supplier', 'route' => 'suppliers.index', 'pattern' => 'suppliers.*', 'icon' => '🚚'],
+        ['label' => 'Pembelian', 'route' => 'purchases.index', 'pattern' => 'purchases.*', 'icon' => '🛒'],
         ['label' => 'Stok', 'route' => 'stock-movements.index', 'pattern' => 'stock-movements.*', 'icon' => '⇄'],
         ['label' => 'Penjualan', 'route' => 'sales.index', 'pattern' => 'sales.*', 'icon' => '🧾'],
         ['label' => 'Laporan', 'route' => 'reports.index', 'pattern' => 'reports.*', 'icon' => '📊'],

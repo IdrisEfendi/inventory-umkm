@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/sales/{sale}/receipt', [SaleController::class, 'receipt'])->name('sales.receipt');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/print', [ReportController::class, 'print'])->name('reports.print');
+    Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.export-csv');
     Route::get('/settings/store', [StoreSettingController::class, 'edit'])->name('settings.store.edit');
     Route::put('/settings/store', [StoreSettingController::class, 'update'])->name('settings.store.update');
 

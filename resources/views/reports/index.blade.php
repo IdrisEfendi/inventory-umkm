@@ -13,6 +13,7 @@
         'custom' => 'Custom',
     ];
     $maxSales = max($chartValues->max(), 1);
+    $exportParams = request()->only(['period', 'from', 'to']);
 @endphp
 
 @section('content')
@@ -25,16 +26,23 @@
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gunakan filter untuk melihat omzet, transaksi, stok, dan produk terlaris per periode.</p>
             </div>
 
-            <form method="GET" action="{{ route('reports.index') }}" class="grid gap-3 sm:grid-cols-[180px_150px_150px_auto]">
-                <select name="period" id="period" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20">
-                    @foreach ($periodLabels as $value => $label)
-                        <option value="{{ $value }}" @selected($period === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
-                <input name="from" type="date" value="{{ $from }}" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20">
-                <input name="to" type="date" value="{{ $to }}" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20">
-                <button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 dark:focus:ring-slate-700">Terapkan</button>
-            </form>
+            <div class="space-y-3">
+                <form method="GET" action="{{ route('reports.index') }}" class="grid gap-3 sm:grid-cols-[180px_150px_150px_auto]">
+                    <select name="period" id="period" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20">
+                        @foreach ($periodLabels as $value => $label)
+                            <option value="{{ $value }}" @selected($period === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    <input name="from" type="date" value="{{ $from }}" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20">
+                    <input name="to" type="date" value="{{ $to }}" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20">
+                    <button class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 dark:focus:ring-slate-700">Terapkan</button>
+                </form>
+
+                <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                    <a href="{{ route('reports.print', $exportParams) }}" target="_blank" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Print Laporan</a>
+                    <a href="{{ route('reports.export-csv', $exportParams) }}" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 dark:bg-emerald-500 dark:hover:bg-emerald-400">Export CSV</a>
+                </div>
+            </div>
         </div>
     </section>
 

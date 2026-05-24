@@ -10,13 +10,96 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
     public function index(Request $request): View
     {
+        return view('reports.index', $this->reportData($request));
+    }
+
+    public function print(Request $request): View
+    {
+        return view('reports.print', $this->reportData($request));
+    }
+
+    public function exportCsv(Request $request): StreamedResponse
+    {
+        $data = $this->reportData($request);
+        $filename = sprintf('laporan-inventory-%s-sampai-%s.csv', $data['from'], $data['to']);
+
+        return response()->streamDownload(function () use ($data) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, ['Laporan Inventory UMKM']);
+            fputcsv($handle, ['Periode', $data['from'], $data['to']]);
+            fputcsv($handle, []);
+
+            fputcsv($handle, ['Ringkasan']);
+            fputcsv($handle, ['Omzet', $data['revenue']]);
+            fputcsv($handle, ['Subtotal', $data['subtotal']]);
+            fputcsv($handle, ['Diskon', $data['discount']]);
+            fputcsv($handle, ['Transaksi', $data['transactions']]);
+            fputcsv($handle, ['Rata-rata Transaksi', $data['averageTransaction']]);
+            fputcsv($handle, ['Item Terjual', $data['soldQuantity']]);
+            fputcsv($handle, ['Stok Masuk', $data['stockIn']]);
+            fputcsv($handle, ['Stok Keluar', $data['stockOut']]);
+            fputcsv($handle, ['Adjustment Stok', $data['stockAdjustments']]);
+            fputcsv($handle, ['Nilai Inventory', $data['inventoryValue']]);
+            fputcsv($handle, []);
+
+            fputcsv($handle, ['Produk Terlaris']);
+            fputcsv($handle, ['SKU', 'Produk', 'Qty Terjual', 'Omzet', 'Stok Saat Ini']);
+            foreach ($data['topProducts'] as $product) {
+                fputcsv($handle, [
+                    $product->product_sku_snapshot,
+                    $product->product_name_snapshot,
+                    $product->total_quantity,
+                    $product->total_revenue,
+                    $product->current_stock,
+                ]);
+            }
+            fputcsv($handle, []);
+
+            fputcsv($handle, ['Stok Menipis']);
+            fputcsv($handle, ['Produk', 'Kategori', 'Stok', 'Minimum']);
+            foreach ($data['lowStockProducts'] as $product) {
+                fputcsv($handle, [
+                    $product->name,
+                    $product->category?->name,
+                    $product->stock,
+                    $product->minimum_stock,
+                ]);
+            }
+            fputcsv($handle, []);
+
+            fputcsv($handle, ['Transaksi Terbaru']);
+            fputcsv($handle, ['Invoice', 'Tanggal', 'Pelanggan', 'Item', 'Total']);
+            foreach ($data['recentSales'] as $sale) {
+                fputcsv($handle, [
+                    $sale->invoice_number,
+                    $sale->sale_date->format('Y-m-d H:i'),
+                    $sale->customer_name ?: 'Umum',
+                    $sale->items_count,
+                    $sale->total,
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    private function reportData(Request $request): array
+    {
         $period = $request->query('period', 'this_month');
         [$from, $to] = $this->resolveDateRange($request, $period);
+
+        if ($from->gt($to)) {
+            [$from, $to] = [$to, $from];
+        }
 
         $salesQuery = Sale::query()
             ->whereBetween('sale_date', [$from->copy()->startOfDay(), $to->copy()->endOfDay()]);
@@ -84,7 +167,7 @@ class ReportController extends Controller
             ->limit(6)
             ->get();
 
-        return view('reports.index', [
+        return [
             'period' => $period,
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
@@ -103,7 +186,7 @@ class ReportController extends Controller
             'chartLabels' => $chartLabels,
             'chartValues' => $chartValues,
             'recentSales' => $recentSales,
-        ]);
+        ];
     }
 
     private function resolveDateRange(Request $request, string $period): array

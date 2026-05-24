@@ -33,7 +33,7 @@
     @endif
 
     <div class="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <form method="POST" action="{{ route('settings.store.update') }}" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <form method="POST" action="{{ route('settings.store.update') }}" enctype="multipart/form-data" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
             @csrf
             @method('PUT')
 
@@ -41,6 +41,23 @@
                 <div class="sm:col-span-2">
                     <label for="store_name" class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-200">Nama Toko <span class="text-rose-500">*</span></label>
                     <input id="store_name" name="store_name" value="{{ old('store_name', $setting->store_name) }}" required class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-indigo-500/20" placeholder="Contoh: Toko Berkah UMKM">
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="logo" class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-200">Logo Toko</label>
+                    <div class="flex flex-col gap-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60 sm:flex-row sm:items-center">
+                        <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
+                            @if ($setting->logo_url)
+                                <img src="{{ $setting->logo_url }}" alt="Logo {{ $setting->store_name }}" class="h-full w-full object-contain p-2">
+                            @else
+                                <span class="text-xs font-bold text-slate-400">LOGO</span>
+                            @endif
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <input id="logo" name="logo" type="file" accept="image/png,image/jpeg,image/webp" class="block w-full text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:file:bg-indigo-700 dark:text-slate-300 dark:file:bg-indigo-500 dark:hover:file:bg-indigo-400">
+                            <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">Format JPG, PNG, atau WebP. Maksimal 2 MB. Kosongkan jika tidak ingin mengganti logo.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
@@ -74,6 +91,9 @@
         <aside class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <h3 class="text-lg font-bold text-slate-950 dark:text-white">Preview Header Nota</h3>
             <div class="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center dark:border-slate-700 dark:bg-slate-800/60">
+                @if ($setting->logo_url)
+                    <img src="{{ $setting->logo_url }}" alt="Logo {{ $setting->store_name }}" class="mx-auto mb-3 h-16 max-w-32 object-contain">
+                @endif
                 <p class="text-lg font-black text-slate-950 dark:text-white">{{ $setting->store_name }}</p>
                 @if ($setting->address)
                     <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ $setting->address }}</p>

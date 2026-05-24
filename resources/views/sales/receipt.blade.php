@@ -12,6 +12,7 @@
         .btn { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 10px; padding: 10px 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
         .btn-primary { border-color: #4f46e5; background: #4f46e5; color: #fff; }
         .header { text-align: center; }
+        .store-logo { display: block; max-width: 72px; max-height: 72px; object-fit: contain; margin: 0 auto 10px; }
         .store-name { font-size: 18px; font-weight: 900; letter-spacing: .02em; }
         .muted { color: #64748b; }
         .small { font-size: 11px; }
@@ -40,6 +41,9 @@
 
     <main class="page">
         <header class="header">
+            @if ($setting->logo_url)
+                <img src="{{ $setting->logo_url }}" alt="Logo {{ $setting->store_name }}" class="store-logo">
+            @endif
             <div class="store-name">{{ $setting->store_name }}</div>
             @if ($setting->address)
                 <div class="muted small" style="margin-top: 6px; line-height: 1.5;">{{ $setting->address }}</div>
